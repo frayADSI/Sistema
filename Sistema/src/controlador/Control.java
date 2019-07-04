@@ -30,6 +30,7 @@ public class Control implements ActionListener{
         formularioClientes.getMenuBtn().addActionListener(this);
         formularioClientes.getInsertarBtn().addActionListener(this);
         insertarClienteForm.getRegistrarBtn().addActionListener(this);
+        insertarClienteForm.getVolverBtn().addActionListener(this);
     }
     
     public void iniciar() {
@@ -74,6 +75,7 @@ public class Control implements ActionListener{
             }
             
         }
+        //eventos insertar clientes
         if (e.getSource() == insertarClienteForm.getRegistrarBtn()) {
             long cedula = Long.parseLong(insertarClienteForm.getCedula().getText());
             String nombre = insertarClienteForm.getNombre().getText();
@@ -87,5 +89,15 @@ public class Control implements ActionListener{
                 ex.printStackTrace();
             }
         }
+        if(e.getSource() == insertarClienteForm.getVolverBtn()) {
+            insertarClienteForm.setVisible(false);
+            if(formularioClientes == null) {
+                formularioClientes = new FormularioClientes();
+                formularioClientes.setVisible(true);
+            } else {
+                formularioClientes.setVisible(true);
+            }
+        }
+        
     }
 }
