@@ -12,6 +12,9 @@ package modelo;
 public class Cliente extends Persona {
     private int telefono;
 
+    public Cliente() {
+        
+    }
     public Cliente(long cedula, String nombre, String apellido, int telefono) {
         this.cedula = cedula;
         this.nombre = nombre;
