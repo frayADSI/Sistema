@@ -34,6 +34,7 @@ public class EliminarClienteForm extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         cedulaEliminarTF = new javax.swing.JTextField();
         eliminarBtn = new javax.swing.JButton();
+        volverBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -42,6 +43,8 @@ public class EliminarClienteForm extends javax.swing.JFrame {
         jLabel2.setText("Cédula de cliente a eliminar");
 
         eliminarBtn.setText("Eliminar");
+
+        volverBtn.setText("volver");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -52,16 +55,17 @@ public class EliminarClienteForm extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(160, 160, 160))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addComponent(jLabel2)
-                        .addGap(46, 46, 46)
-                        .addComponent(cedulaEliminarTF, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(156, 156, 156)
-                        .addComponent(eliminarBtn)))
-                .addContainerGap(68, Short.MAX_VALUE))
+                .addGap(30, 30, 30)
+                .addComponent(jLabel2)
+                .addGap(46, 46, 46)
+                .addComponent(cedulaEliminarTF, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(156, 156, 156)
+                .addComponent(eliminarBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
+                .addComponent(volverBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -72,9 +76,11 @@ public class EliminarClienteForm extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(cedulaEliminarTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 163, Short.MAX_VALUE)
-                .addComponent(eliminarBtn)
-                .addGap(51, 51, 51))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 143, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(eliminarBtn)
+                    .addComponent(volverBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(31, 31, 31))
         );
 
         pack();
@@ -120,6 +126,7 @@ public class EliminarClienteForm extends javax.swing.JFrame {
     private javax.swing.JButton eliminarBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JButton volverBtn;
     // End of variables declaration//GEN-END:variables
 
     public JTextField getCedulaEliminarTF() {
@@ -128,6 +135,10 @@ public class EliminarClienteForm extends javax.swing.JFrame {
 
     public JButton getEliminarBtn() {
         return eliminarBtn;
+    }
+
+    public JButton getVolverBtn() {
+        return volverBtn;
     }
     
 }
