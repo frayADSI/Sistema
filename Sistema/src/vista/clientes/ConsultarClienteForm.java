@@ -52,6 +52,8 @@ public class ConsultarClienteForm extends javax.swing.JFrame {
 
         jLabel2.setText("Cédula de cliente a consultar");
 
+        CedulaConsultarTF.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+
         jLabel3.setText("Datos del cliente");
 
         jLabel4.setText("Cédula");
