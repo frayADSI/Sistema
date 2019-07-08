@@ -113,31 +113,36 @@ public class ControladorClientes implements ActionListener{
             if(insertarClienteForm.getNombre().getText().length() <= 45) {
                 nombre = insertarClienteForm.getNombre().getText();
             } else {
-                JOptionPane.showMessageDialog(insertarClienteForm.getRootPane(), "Maximo 45 carcateres en nombre", "Error", 
+                JOptionPane.showMessageDialog(insertarClienteForm.getRootPane(), "Maximo 45 caracteres en nombre", "Error", 
                 JOptionPane.WARNING_MESSAGE);
                 return;
             }
             if(insertarClienteForm.getApellido().getText().length() <= 45) {
                 apellido = insertarClienteForm.getApellido().getText();
             } else {
-                JOptionPane.showMessageDialog(insertarClienteForm.getRootPane(), "Maximo 45 carcateres en apellido", "Error", 
+                JOptionPane.showMessageDialog(insertarClienteForm.getRootPane(), "Maximo 45 caracteres en apellido", "Error", 
                 JOptionPane.WARNING_MESSAGE);
                 return;
             }
-                
-            try {
-                telf = Integer.parseInt(insertarClienteForm.getTelefono().getText()); 
-            } catch (NumberFormatException nex) {
-                JOptionPane.showMessageDialog(insertarClienteForm, "Debe ingresar solo numeros en el telefono", "Error", 
+            if(insertarClienteForm.getTelefono().getText().length() <= 10) {    
+                try {
+                    telf = Integer.parseInt(insertarClienteForm.getTelefono().getText()); 
+                } catch (NumberFormatException nex) {
+                    JOptionPane.showMessageDialog(insertarClienteForm, "Debe ingresar solo numeros en el telefono", "Error", 
+                    JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } else {
+                JOptionPane.showMessageDialog(insertarClienteForm.getRootPane(), "Maximo 10 numeros en telefono", "Error", 
                 JOptionPane.WARNING_MESSAGE);
                 return;
-             }
+            }
              if(!nombre.equals("") && !apellido.equals("") && telf != 0) {
                 Cliente clienteTemp = new Cliente(cedula, nombre, apellido, telf);
                 ServicioTablaCliente tablaCliente = new ServicioTablaCliente();
                 try {
                 int registroInsert = tablaCliente.insert(clienteTemp);
-                JOptionPane.showMessageDialog(insertarClienteForm, "Se insertaron" + registroInsert + "clientes", "", 
+                JOptionPane.showMessageDialog(insertarClienteForm, "Se insertó " + registroInsert + " cliente(s)", "", 
                 JOptionPane.WARNING_MESSAGE);
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(insertarClienteForm, "No se pudo insertar", "Error", 
@@ -199,14 +204,14 @@ public class ControladorClientes implements ActionListener{
              if(actualizarClienteForm.getNombre().getText().length() <= 45) {
                 nombre = actualizarClienteForm.getNombre().getText();
             } else {
-                JOptionPane.showMessageDialog(actualizarClienteForm.getRootPane(), "Maximo 45 carcateres en nombre", "Error", 
+                JOptionPane.showMessageDialog(actualizarClienteForm.getRootPane(), "Maximo 45 caracteres en nombre", "Error", 
                 JOptionPane.WARNING_MESSAGE);
                 return;
             }
             if(actualizarClienteForm.getApellido().getText().length() <= 45) {
                 apellido = actualizarClienteForm.getApellido().getText();
             } else {
-                JOptionPane.showMessageDialog(actualizarClienteForm.getRootPane(), "Maximo 45 carcateres en apellido", "Error", 
+                JOptionPane.showMessageDialog(actualizarClienteForm.getRootPane(), "Maximo 45 caracteres en apellido", "Error", 
                 JOptionPane.WARNING_MESSAGE);
                 return;
             } 
@@ -223,7 +228,7 @@ public class ControladorClientes implements ActionListener{
                 ServicioTablaCliente tablaCliente = new ServicioTablaCliente();
                 try {
                 int registroInsert = tablaCliente.update(clienteTemp);
-                JOptionPane.showMessageDialog(actualizarClienteForm.getRootPane(), "Se actualizaron" + registroInsert + "clientes", "", 
+                JOptionPane.showMessageDialog(actualizarClienteForm.getRootPane(), "Se actualizaron " + registroInsert + " cliente(s)", "", 
                 JOptionPane.WARNING_MESSAGE);
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(actualizarClienteForm, "No se pudo actualizar", "Error", 
@@ -324,14 +329,14 @@ public class ControladorClientes implements ActionListener{
                     JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                int confirmacion = JOptionPane.showConfirmDialog(eliminarClienteForm.getRootPane(), "Está seguro que"
-                        + " desea eliminar el cliente con cédula" + cedula + "?", "Eliminación de cliente", 
+                int confirmacion = JOptionPane.showConfirmDialog(eliminarClienteForm.getRootPane(), "Está seguro de que"
+                        + " desea eliminar el cliente con cédula " + cedula + "?", "Eliminación de cliente", 
                         JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
                 if(confirmacion == 0) {
                     try {
                         ServicioTablaCliente tablaCliente = new ServicioTablaCliente();
                         tablaCliente.delete(cedula);
-                        JOptionPane.showMessageDialog(eliminarClienteForm.getRootPane(), "se ha borrado el cliente con cedula" + cedula
+                        JOptionPane.showMessageDialog(eliminarClienteForm.getRootPane(), "se ha borrado el cliente con cedula " + cedula
                         + " exitosamente!");
                     } catch (Exception ex) {
                         ex.printStackTrace();

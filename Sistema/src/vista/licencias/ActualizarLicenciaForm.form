@@ -234,7 +234,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel10">
       <Properties>
-        <Property name="text" type="java.lang.String" value="fecha de ingreso:"/>
+        <Property name="text" type="java.lang.String" value="fecha de vencimiento:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel11">
