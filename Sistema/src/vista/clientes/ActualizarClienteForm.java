@@ -44,7 +44,7 @@ public class ActualizarClienteForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("Registro de cliente");
+        jLabel1.setText("Actualizar cliente");
 
         jLabel2.setText("Cédula");
 
@@ -89,7 +89,7 @@ public class ActualizarClienteForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(268, 268, 268)
                 .addComponent(jLabel1)
-                .addContainerGap(227, Short.MAX_VALUE))
+                .addContainerGap(235, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)

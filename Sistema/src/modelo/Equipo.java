@@ -32,6 +32,7 @@ public class Equipo {
         this.fechaIngreso = ingreso;
         this.ubicacion = "";
         this.condicion = "";
+        this.tipo = "";
     }
 
     public String getSerial() {
