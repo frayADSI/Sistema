@@ -11,10 +11,9 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
-import modelo.Cliente;
-import servicios.ServicioTablaCliente;
+import modelo.*;
+import servicios.*;
 import vista.FormularioPrincipal;
-import java.util.Calendar;
 /**
  *
  * @author Fray
@@ -36,7 +35,14 @@ public class ControladorEquipos implements ActionListener{
         control.formularioEquipos.getUpdateBtn().addActionListener(this);
         control.formularioEquipos.getSelectBtn().addActionListener(this);
         control.formularioEquipos.getDeleteBtn().addActionListener(this);
-        
+        insertarEquipoForm.getRegistrarBtn().addActionListener(this);
+        insertarEquipoForm.getVolverBtn().addActionListener(this);
+        actualizarEquipoForm.getActualizarBtn().addActionListener(this);
+        actualizarEquipoForm.getVolverBtn().addActionListener(this);
+        consultarEquipoForm.getConsultarBtn().addActionListener(this);
+        consultarEquipoForm.getVolverBtn().addActionListener(this);
+        eliminarEquipoForm.getEliminarBtn().addActionListener(this);
+        eliminarEquipoForm.getVolverBtn().addActionListener(this);
     }
 
     @Override
@@ -51,8 +57,8 @@ public class ControladorEquipos implements ActionListener{
             }
             
         }
-        if(e.getSource() == control.formularioClientes.getUpdateBtn()) {
-            control.formularioClientes.setVisible(false);
+        if(e.getSource() == control.formularioEquipos.getUpdateBtn()) {
+            control.formularioEquipos.setVisible(false);
             if (actualizarEquipoForm == null) {
                 actualizarEquipoForm = new ActualizarEquipoForm();
                 actualizarEquipoForm.setVisible(true);
@@ -61,8 +67,8 @@ public class ControladorEquipos implements ActionListener{
             }
             
         }
-        if(e.getSource() == control.formularioClientes.getSelectBtn()) {
-            control.formularioClientes.setVisible(false);
+        if(e.getSource() == control.formularioEquipos.getSelectBtn()) {
+            control.formularioEquipos.setVisible(false);
             if (consultarEquipoForm == null) {
                 consultarEquipoForm = new ConsultarEquipoForm();
                 consultarEquipoForm.setVisible(true);
@@ -82,8 +88,8 @@ public class ControladorEquipos implements ActionListener{
             consultarEquipoForm.getCedulaClienteLbl().setText("");;
             consultarEquipoForm.getTelefonoLbl().setText("");
         }
-        if(e.getSource() == control.formularioClientes.getDeleteBtn()) {
-            control.formularioClientes.setVisible(false);
+        if(e.getSource() == control.formularioEquipos.getDeleteBtn()) {
+            control.formularioEquipos.setVisible(false);
             if (eliminarEquipoForm == null) {
                 eliminarEquipoForm = new EliminarEquipoForm();
                 eliminarEquipoForm.setVisible(true);
@@ -92,247 +98,435 @@ public class ControladorEquipos implements ActionListener{
             }
             
         }
-        //eventos insertar clientes
+        //eventos insertar equipos
         if (e.getSource() == insertarEquipoForm.getRegistrarBtn()) {
-            String serial = null;
-            String licencia = null;
+            String serial = "";
+            String licencia = "";
+            long cedulaCliente = 0;
+            String tipo = "";
+            double memoria = 0;
+            String marca = "";
+            String ubicacion = "";
+            String condicion = "";
+            String fechaString = null;
+            String dia = null;
+            String year = null;
+            String mes = null;
+            Date ingreso = null;
+            Cliente cliente = new Cliente();
+            Licencia licenciaConsultar = null;
+            
+            if(insertarEquipoForm.getSerial().getText().length() <= 20) {
+                serial = insertarEquipoForm.getSerial().getText();  
+            } else {
+                JOptionPane.showMessageDialog(insertarEquipoForm.getRootPane(), "Maximo 20 caracteres en serial", "Error", 
+                JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            if(insertarEquipoForm.getCodigoLicencia().getText().length() <= 20) {
+                licencia = insertarEquipoForm.getCodigoLicencia().getText();  
+            } else {
+                JOptionPane.showMessageDialog(insertarEquipoForm.getRootPane(), "Maximo 20 caracteres en la licencia", "Error", 
+                JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        
+        
+            if(insertarEquipoForm.getCedulaCliente().getText().length() <= 20) {
+                try {
+                    cedulaCliente = Long.parseLong(insertarEquipoForm.getCedulaCliente().getText());  
+                } catch (NumberFormatException nex) {
+                    JOptionPane.showMessageDialog(insertarEquipoForm.getRootPane(), "Debe ingresar solo numeros en cedula", "Error", 
+                    JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } else {
+                JOptionPane.showMessageDialog(insertarEquipoForm.getRootPane(), "Maximo 20 numeros en cedula", "Error", 
+                JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if(insertarEquipoForm.getTipoEquipo().getText().length() <= 20) {
+                tipo = insertarEquipoForm.getTipoEquipo().getText();
+            } else {
+                JOptionPane.showMessageDialog(insertarEquipoForm.getRootPane(), "Maximo 20 caracteres en el tipo", "Error", 
+                JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+                
+            try {
+                memoria = Double.parseDouble(insertarEquipoForm.getMemoria().getText()); 
+            } catch (NumberFormatException nex) {
+                JOptionPane.showMessageDialog(insertarEquipoForm, "Debe ingresar solo numeros en la memoria", "Error", 
+                JOptionPane.WARNING_MESSAGE);
+                return;
+             }
+            if(insertarEquipoForm.getMarca().getText().length() <= 20) {
+                marca = insertarEquipoForm.getMarca().getText();
+            } else {
+                JOptionPane.showMessageDialog(insertarEquipoForm.getRootPane(), "Maximo 15 caracteres en la marca", "Error", 
+                JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if(insertarEquipoForm.getUbicacion().getText().length() <= 20) {
+                marca = insertarEquipoForm.getUbicacion().getText();
+            } else {
+                JOptionPane.showMessageDialog(insertarEquipoForm.getRootPane(), "Maximo 40 caracteres en la ubicacion", "Error", 
+                JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            condicion = insertarEquipoForm.getCondicion().getSelectedItem().toString();
+            ubicacion = insertarEquipoForm.getUbicacion().getText();
+            //obteniendo fecha de vencimiento
+            try {
+                dia = insertarEquipoForm.getDia().getSelectedItem().toString();
+                mes = insertarEquipoForm.getMes().getSelectedItem().toString();
+                year = insertarEquipoForm.getYear().getText();
+                fechaString = year +"-"+ mes +"-" +dia;
+                ingreso = Date.valueOf(fechaString);
+            } catch (IllegalArgumentException timeEx) {
+                JOptionPane.showMessageDialog(insertarEquipoForm.getRootPane(), "Fecha incorrecta", "Error", 
+                JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            //buscar cliente 
+            try {
+                ServicioTablaCliente tablaCliente = new ServicioTablaCliente();
+                cliente = tablaCliente.consultar(cedulaCliente);
+                if(cliente.getCedula() == 0){
+                    JOptionPane.showMessageDialog(insertarEquipoForm.getRootPane(), "El cliente no se encuentra en la base de datos"
+                        + "", "Error", 
+                JOptionPane.WARNING_MESSAGE);
+                return;
+                }
+            } catch (SQLException sqlex) {
+                JOptionPane.showMessageDialog(insertarEquipoForm.getRootPane(), "Hubo un error de conexión"
+                        + "", "Error", 
+                JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            //buscar licencia
+            try {
+                ServicioTablaLicencia tablaLicencia = new ServicioTablaLicencia();
+                licenciaConsultar = new Licencia();
+                licenciaConsultar = tablaLicencia.consultar(licencia);
+                if(licenciaConsultar.getCodigo() == null){
+                    JOptionPane.showMessageDialog(insertarEquipoForm.getRootPane(), "La licencia no se encuentra en la base de datos"
+                        + "", "Error", 
+                JOptionPane.WARNING_MESSAGE);
+                return;
+                }
+            } catch (SQLException sqlex) {
+                JOptionPane.showMessageDialog(insertarEquipoForm.getRootPane(), "Hubo un error de conexión"
+                        + "", "Error", 
+                JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if(!serial.equals("") && !licencia.equals("")  && ingreso != null && cedulaCliente != 0) {
+                Equipo equipo = new Equipo(serial, licencia, cliente, ingreso);
+                ServicioTablaEquipo tablaEquipo = new ServicioTablaEquipo();
+                if (ubicacion != "") {
+                    equipo.setUbicacion(ubicacion);
+                }
+                if (condicion != "") {
+                    equipo.setCondicion(condicion);
+                }
+                if ( cedulaCliente != 0) {
+                    equipo.setCliente_ident(cedulaCliente);
+                }
+                if (tipo != "") 
+                    equipo.setTipo(tipo);
+                if (memoria != 0) {
+                    equipo.setMemoria(memoria);
+                }
+                if (marca != "") 
+                    equipo.setMarca(marca);
+                try {
+                    
+                int registroInsert = tablaEquipo.insert(equipo);
+                JOptionPane.showMessageDialog(insertarEquipoForm, "Se insertaron" + registroInsert + " equipos", "", 
+                JOptionPane.WARNING_MESSAGE);
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(insertarEquipoForm, "No se pudo insertar", "Error", 
+                JOptionPane.WARNING_MESSAGE);
+                    ex.printStackTrace();
+                }
+            } else {
+                JOptionPane.showMessageDialog(insertarEquipoForm.getRootPane(), "por favor complete los campos", "Error", 
+                JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        }
+        
+        if(e.getSource() == insertarEquipoForm.getVolverBtn()) {
+            insertarEquipoForm.setVisible(false);
+            if(control.formularioEquipos == null) {
+                control.formularioEquipos = new FormularioEquipos();
+                control.formularioEquipos.setVisible(true);
+            } else {
+                control.formularioEquipos.setVisible(true);
+            }
+        }
+        //eventos actualizar equipos
+        if (e.getSource() == actualizarEquipoForm.getActualizarBtn()) {
+            String serial = "";
+            String licencia = "";
             long cedulaCliente = 0;
             String tipo = null;
             double memoria = 0;
             String marca = null;
             String ubicacion = null;
             String condicion = null;
-            Calendar fechaIngreso = null;
-            if(insertarEquipoForm.getSerial().getText().length() <= 20) {
-                serial = insertarEquipoForm.getSerial().getText();  
+            String fechaString = null;
+            String dia = null;
+            String year = null;
+            String mes = null;
+            Date vencimiento = null;
+            Cliente cliente = new Cliente();
+            Licencia licenciaConsultar = null;
+            
+            if(actualizarEquipoForm.getSerial().getText().length() <= 20) {
+                serial = actualizarEquipoForm.getSerial().getText();  
             } else {
-                JOptionPane.showMessageDialog(insertarEquipoForm.getRootPane(), "Maximo 20 numeros en serial", "Error", 
+                JOptionPane.showMessageDialog(actualizarEquipoForm.getRootPane(), "Maximo 20 numeros en serial", "Error", 
                 JOptionPane.WARNING_MESSAGE);
                 return;
             }
-        }
-            /*if(insertarClienteForm.getNombre().getText().length() <= 45) {
-                nombre = insertarClienteForm.getNombre().getText();
+        
+            if(actualizarEquipoForm.getCodigoLicencia().getText().length() <= 20) {
+                licencia = actualizarEquipoForm.getCodigoLicencia().getText();  
             } else {
-                JOptionPane.showMessageDialog(insertarClienteForm.getRootPane(), "Maximo 45 carcateres en nombre", "Error", 
+                JOptionPane.showMessageDialog(actualizarEquipoForm.getRootPane(), "Maximo 20 caracteres en la licencia", "Error", 
                 JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            if(insertarClienteForm.getApellido().getText().length() <= 45) {
-                apellido = insertarClienteForm.getApellido().getText();
+            if(actualizarEquipoForm.getCedulaCliente().getText().length() <= 20) {
+                try {
+                    cedulaCliente = Long.parseLong(actualizarEquipoForm.getCedulaCliente().getText());  
+                } catch (NumberFormatException nex) {
+                    JOptionPane.showMessageDialog(actualizarEquipoForm.getRootPane(), "Debe ingresar solo numeros en cedula", "Error", 
+                    JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
             } else {
-                JOptionPane.showMessageDialog(insertarClienteForm.getRootPane(), "Maximo 45 carcateres en apellido", "Error", 
+                JOptionPane.showMessageDialog(actualizarEquipoForm.getRootPane(), "Maximo 20 numeros en cedula", "Error", 
+                JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if(actualizarEquipoForm.getTipoEquipo().getText().length() <= 20) {
+                tipo = insertarEquipoForm.getTipoEquipo().getText();
+            } else {
+                JOptionPane.showMessageDialog(actualizarEquipoForm.getRootPane(), "Maximo 20 caracteres en el tipo", "Error", 
                 JOptionPane.WARNING_MESSAGE);
                 return;
             }
                 
             try {
-                telf = Integer.parseInt(insertarClienteForm.getTelefono().getText()); 
+                memoria = Double.parseDouble(actualizarEquipoForm.getMemoria().getText()); 
             } catch (NumberFormatException nex) {
-                JOptionPane.showMessageDialog(insertarClienteForm, "Debe ingresar solo numeros en el telefono", "Error", 
+                JOptionPane.showMessageDialog(actualizarEquipoForm, "Debe ingresar solo numeros en la memoria", "Error", 
                 JOptionPane.WARNING_MESSAGE);
                 return;
              }
-             if(!nombre.equals("") && !apellido.equals("") && telf != 0) {
-                Cliente clienteTemp = new Cliente(cedula, nombre, apellido, telf);
-                ServicioTablaCliente tablaCliente = new ServicioTablaCliente();
-                try {
-                int registroInsert = tablaCliente.insert(clienteTemp);
-                JOptionPane.showMessageDialog(insertarClienteForm, "Se insertaron" + registroInsert + "clientes", "", 
-                JOptionPane.WARNING_MESSAGE);
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(insertarClienteForm, "No se pudo insertar", "Error", 
-                JOptionPane.WARNING_MESSAGE);
-                    ex.printStackTrace();
-                }
+            if(actualizarEquipoForm.getMarca().getText().length() <= 20) {
+                marca = actualizarEquipoForm.getMarca().getText();
             } else {
-                JOptionPane.showMessageDialog(insertarClienteForm.getRootPane(), "por favor complete los campos", "Error", 
+                JOptionPane.showMessageDialog(insertarEquipoForm.getRootPane(), "Maximo 15 caracteres en la marca", "Error", 
                 JOptionPane.WARNING_MESSAGE);
                 return;
             }
-        }
-        
-        if(e.getSource() == insertarClienteForm.getVolverBtn()) {
-            insertarClienteForm.setVisible(false);
-            if(control.formularioClientes == null) {
-                control.formularioClientes = new FormularioClientes();
-                control.formularioClientes.setVisible(true);
+            if(actualizarEquipoForm.getUbicacion().getText().length() <= 20) {
+                marca = insertarEquipoForm.getUbicacion().getText();
             } else {
-                control.formularioClientes.setVisible(true);
+                JOptionPane.showMessageDialog(actualizarEquipoForm.getRootPane(), "Maximo 40 caracteres en la ubicacion", "Error", 
+                JOptionPane.WARNING_MESSAGE);
+                return;
             }
-        }
-        //eventos actualizar clientes
-        if (e.getSource() == actualizarClienteForm.getActualizarBtn()) {
-            long cedula = 0;
-            int telf = 0;
-            String nombre = "";
-            String apellido = "";
             
-             if(actualizarClienteForm.getCedula().getText().length() <= 20) {
-                try {
-                    cedula = Long.parseLong(actualizarClienteForm.getCedula().getText());  
-                } catch (NumberFormatException nex) {
-                    JOptionPane.showMessageDialog(actualizarClienteForm.getRootPane(), "Debe ingresar solo numeros en cedula", "Error", 
-                    JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-            } else {
-                JOptionPane.showMessageDialog(actualizarClienteForm.getRootPane(), "Maximo 20 numeros en cedula", "Error", 
+            condicion = actualizarEquipoForm.getCondicion().getSelectedItem().toString();
+            ubicacion = actualizarEquipoForm.getUbicacion().getText();
+            //obteniendo fecha de vencimiento
+            try {
+                dia = actualizarEquipoForm.getDia().getSelectedItem().toString();
+                mes = actualizarEquipoForm.getMes().getSelectedItem().toString();
+                year = actualizarEquipoForm.getYear().getText();
+                fechaString = year +"-"+ mes +"-" +dia;
+                vencimiento = Date.valueOf(fechaString);
+            } catch (IllegalArgumentException timeEx) {
+                JOptionPane.showMessageDialog(actualizarEquipoForm.getRootPane(), "Fecha incorrecta", "Error", 
                 JOptionPane.WARNING_MESSAGE);
                 return;
             }
+            
+            //buscar cliente 
             try {
                 ServicioTablaCliente tablaCliente = new ServicioTablaCliente();
-                Cliente cliente = tablaCliente.consultar(cedula);
+                cliente = tablaCliente.consultar(cedulaCliente);
                 if(cliente.getCedula() == 0){
-                    JOptionPane.showMessageDialog(actualizarClienteForm.getRootPane(), "El cliente no se encuentra en la base de datos"
+                    JOptionPane.showMessageDialog(actualizarEquipoForm.getRootPane(), "El cliente no se encuentra en la base de datos"
                         + "", "Error", 
                 JOptionPane.WARNING_MESSAGE);
                 return;
                 }
             } catch (SQLException sqlex) {
-                JOptionPane.showMessageDialog(actualizarClienteForm.getRootPane(), "Hubo un error de conexión"
+                JOptionPane.showMessageDialog(actualizarEquipoForm.getRootPane(), "Hubo un error de conexión"
                         + "", "Error", 
                 JOptionPane.WARNING_MESSAGE);
                 return;
             }
- 
-             if(actualizarClienteForm.getNombre().getText().length() <= 45) {
-                nombre = actualizarClienteForm.getNombre().getText();
-            } else {
-                JOptionPane.showMessageDialog(actualizarClienteForm.getRootPane(), "Maximo 45 carcateres en nombre", "Error", 
-                JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            if(actualizarClienteForm.getApellido().getText().length() <= 45) {
-                apellido = actualizarClienteForm.getApellido().getText();
-            } else {
-                JOptionPane.showMessageDialog(actualizarClienteForm.getRootPane(), "Maximo 45 carcateres en apellido", "Error", 
-                JOptionPane.WARNING_MESSAGE);
-                return;
-            } 
-            
+            //buscar licencia
             try {
-                telf = Integer.parseInt(actualizarClienteForm.getTelefono().getText()); 
-            } catch (NumberFormatException nex) {
-                JOptionPane.showMessageDialog(actualizarClienteForm.getRootPane(), "Debe ingresar solo numeros en el telefono", "Error", 
+                ServicioTablaLicencia tablaLicencia = new ServicioTablaLicencia();
+                licenciaConsultar = new Licencia();
+                licenciaConsultar = tablaLicencia.consultar(licencia);
+                if(licenciaConsultar.getCodigo() == null){
+                    JOptionPane.showMessageDialog(actualizarEquipoForm.getRootPane(), "La licencia no se encuentra en la base de datos"
+                        + "", "Error", 
+                JOptionPane.WARNING_MESSAGE);
+                return;
+                }
+            } catch (SQLException sqlex) {
+                JOptionPane.showMessageDialog(actualizarEquipoForm.getRootPane(), "Hubo un error de conexión"
+                        + "", "Error", 
                 JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            if(!nombre.equals("") && !apellido.equals("") && telf != 0) {
-                Cliente clienteTemp = new Cliente(cedula, nombre, apellido, telf);
-                ServicioTablaCliente tablaCliente = new ServicioTablaCliente();
+            if(!serial.equals("") && !licencia.equals("")  && vencimiento != null && cedulaCliente != 0) {
+                Equipo equipo = new Equipo(serial, licencia, cliente, vencimiento);
+                ServicioTablaEquipo tablaEquipo = new ServicioTablaEquipo();
+                if (ubicacion != "") {
+                    equipo.setUbicacion(ubicacion);
+                }
+                if (condicion != "") {
+                    equipo.setCondicion(condicion);
+                }
+                if ( cedulaCliente != 0) {
+                    equipo.setCliente_ident(cedulaCliente);
+                }
+                if (tipo != "") 
+                    equipo.setTipo(tipo);
+                if (memoria != 0) {
+                    equipo.setMemoria(memoria);
+                }
+                if (marca != "") 
+                    equipo.setMarca(marca);
                 try {
-                int registroInsert = tablaCliente.update(clienteTemp);
-                JOptionPane.showMessageDialog(actualizarClienteForm.getRootPane(), "Se actualizaron" + registroInsert + "clientes", "", 
+                int registroInsert = tablaEquipo.update(equipo);
+                JOptionPane.showMessageDialog(actualizarEquipoForm, "Se actualizaron" + registroInsert + " equipos", "", 
                 JOptionPane.WARNING_MESSAGE);
                 } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(actualizarClienteForm, "No se pudo actualizar", "Error", 
+                    JOptionPane.showMessageDialog(actualizarEquipoForm, "No se pudo atualizar", "Error", 
                 JOptionPane.WARNING_MESSAGE);
                     ex.printStackTrace();
                 }
             } else {
-                JOptionPane.showMessageDialog(actualizarClienteForm.getRootPane(), "por favor complete los campos", "Error", 
+                JOptionPane.showMessageDialog(actualizarEquipoForm.getRootPane(), "por favor complete los campos", "Error", 
                 JOptionPane.WARNING_MESSAGE);
                 return;
             }
             
         }
-        if(e.getSource() == actualizarClienteForm.getVolverBtn()) {
-            actualizarClienteForm.setVisible(false);
-            if(control.formularioClientes == null) {
-                control.formularioClientes = new FormularioClientes();
-                control.formularioClientes.setVisible(true);
+        if(e.getSource() == actualizarEquipoForm.getVolverBtn()) {
+            actualizarEquipoForm.setVisible(false);
+            if(control.formularioEquipos == null) {
+                control.formularioEquipos = new FormularioEquipos();
+                control.formularioEquipos.setVisible(true);
             } else {
-                control.formularioClientes.setVisible(true);
+                control.formularioEquipos.setVisible(true);
             }
         }
-        //Consultar Cliente formulario
-        if(e.getSource() == consultarClienteForm.getConsultarBtn()) {
-            long cedula = 0;
-            if(consultarClienteForm.getCedulaConsultarTF().getText() != "") {
-                if(consultarClienteForm.getCedulaConsultarTF().getText().length() <= 20) {
-                try {
-                    cedula = Long.parseLong(consultarClienteForm.getCedulaConsultarTF().getText());  
-                } catch (NumberFormatException nex) {
-                    JOptionPane.showMessageDialog(consultarClienteForm.getRootPane(), "Debe ingresar solo numeros en cedula", "Error", 
-                    JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
+        //Consultar equipo formulario
+        if(e.getSource() == consultarEquipoForm.getConsultarBtn()) {
+            String serial = null;
+            if(consultarEquipoForm.getSerialConsultarTF().getText() != "") {
+                if(consultarEquipoForm.getCedulaConsultarTF().getText().length() <= 20) {
+               
+                    serial = consultarEquipoForm.getSerialConsultarTF().getText();
+                
                 } else {
-                    JOptionPane.showMessageDialog(consultarClienteForm.getRootPane(), "Maximo 20 numeros en cedula", "Error", 
+                    JOptionPane.showMessageDialog(consultarEquipoForm.getRootPane(), "Maximo 20 caracteres en serial", "Error", 
                     JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-            ServicioTablaCliente tablaCliente = new ServicioTablaCliente();
+            ServicioTablaEquipo tablaEquipo = new ServicioTablaEquipo();
             try {
-                Cliente cliente = tablaCliente.consultar(cedula);
-                if (cliente.getCedula() == 0) {
-                    JOptionPane.showMessageDialog(actualizarClienteForm.getRootPane(), "El cliente no se encuentra en la base de datos"
+                Equipo equipo = tablaEquipo.consultar(serial);
+                if (equipo.getSerial() == null) {
+                    JOptionPane.showMessageDialog(actualizarEquipoForm.getRootPane(), "El equipo no se encuentra en la base de datos"
                         + "", "Error", 
                     JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                consultarClienteForm.getCedulaLbl().setText("" + cliente.getCedula());
-                consultarClienteForm.getNombreLbl().setText(cliente.getNombre());
-                consultarClienteForm.getApellidoLbl().setText(cliente.getApellido());
-                consultarClienteForm.getTelefonoLbl().setText("" + cliente.getTelefono());
+                consultarEquipoForm.getSerialLbl().setText(equipo.getSerial());
+                consultarEquipoForm.getLicenciaLbl().setText(equipo.getLicencia_LicCodigo());
+                consultarEquipoForm.getTipoLbl().setText(equipo.getTipo());
+                consultarEquipoForm.getMemoriaLbl().setText(""+equipo.getMemoria());
+                consultarEquipoForm.getMarcaLbl().setText(equipo.getMarca());
+                consultarEquipoForm.getUbicacionLbl().setText(equipo.getUbicacion());
+                consultarEquipoForm.getCondicionLbl().setText(equipo.getCondicion());
+                consultarEquipoForm.getFechaIngesoLbl().setText(equipo.getFechaIngreso().toString());
+                consultarEquipoForm.getCedulaClienteLbl().setText(""+equipo.getCliente_ident());
+                consultarEquipoForm.getNombreLbl().setText(equipo.getCliente().getNombre());
+                consultarEquipoForm.getApellidoCLienteLbl().setText(equipo.getCliente().getApellido());
+                consultarEquipoForm.getTelefonoClienteLbl().setText(""+equipo.getCliente().getTelefono());
                 } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(actualizarEquipoForm.getRootPane(), "Error de conexión"
+                        + "", "Error", 
+                    JOptionPane.WARNING_MESSAGE);
                     ex.printStackTrace();
+                    return;
                 }
                 
             }
         }
         
-        if(e.getSource() == consultarClienteForm.getVolverBtn()) {
-            consultarClienteForm.setVisible(false);
-            if(control.formularioClientes == null) {
-                control.formularioClientes = new FormularioClientes();
-                control.formularioClientes.setVisible(true);
+        if(e.getSource() == consultarEquipoForm.getVolverBtn()) {
+            consultarEquipoForm.setVisible(false);
+            if(control.formularioEquipos == null) {
+                control.formularioEquipos = new FormularioEquipos();
+                control.formularioEquipos.setVisible(true);
             } else {
-                control.formularioClientes.setVisible(true);
+                control.formularioEquipos.setVisible(true);
             }
         }
         //eliminar cliente
-        if(e.getSource() == eliminarClienteForm.getEliminarBtn()) {
-            long cedula = 0;
-            if(eliminarClienteForm.getCedulaEliminarTF().getText() != "") {
-                if(eliminarClienteForm.getCedulaEliminarTF().getText().length() <= 20) {
-                try {
-                    cedula = Long.parseLong(eliminarClienteForm.getCedulaEliminarTF().getText());  
-                } catch (NumberFormatException nex) {
-                    JOptionPane.showMessageDialog(eliminarClienteForm.getRootPane(), "Debe ingresar solo numeros en cedula", "Error", 
-                    JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
+        if(e.getSource() == eliminarEquipoForm.getEliminarBtn()) {
+            String serial = null;
+           if(eliminarEquipoForm.getSerialEliminarTF().getText() != "") {
+                if(eliminarEquipoForm.getSerialEliminarTF().getText().length() <= 20) {
+               
+                    serial = consultarEquipoForm.getSerialConsultarTF().getText();
+                
                 } else {
-                    JOptionPane.showMessageDialog(eliminarClienteForm.getRootPane(), "Maximo 20 numeros en cedula", "Error", 
+                    JOptionPane.showMessageDialog(eliminarEquipoForm.getRootPane(), "Maximo 20 caracteres en serial", "Error", 
                     JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                try {
-                    ServicioTablaCliente tablaCliente = new ServicioTablaCliente();
-                    Cliente cliente = tablaCliente.consultar(cedula);
-                if(cliente.getCedula() == 0){
-                    JOptionPane.showMessageDialog(eliminarClienteForm.getRootPane(), "El cliente no se encuentra en la base de datos"
+                 ServicioTablaEquipo tablaEquipo = new ServicioTablaEquipo();
+                 try {
+                Equipo equipo = tablaEquipo.consultar(serial);
+                if (equipo.getSerial() == null) {
+                    JOptionPane.showMessageDialog(eliminarEquipoForm.getRootPane(), "El equipo no se encuentra en la base de datos"
                         + "", "Error", 
                     JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 } catch (SQLException sqlex) {
-                    JOptionPane.showMessageDialog(eliminarClienteForm.getRootPane(), "Hubo un error de conexión"
+                    JOptionPane.showMessageDialog(eliminarEquipoForm.getRootPane(), "Hubo un error de conexión"
                         + "", "Error", 
                     JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                int confirmacion = JOptionPane.showConfirmDialog(eliminarClienteForm.getRootPane(), "Está seguro que"
-                        + " desea eliminar el cliente con cédula" + cedula + "?", "Eliminación de cliente", 
+                int confirmacion = JOptionPane.showConfirmDialog(eliminarEquipoForm.getRootPane(), "Está seguro que"
+                        + " desea eliminar el equipo con serial" + serial + "?", "Eliminación de equipo", 
                         JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
                 if(confirmacion == 0) {
                     try {
-                        ServicioTablaCliente tablaCliente = new ServicioTablaCliente();
-                        tablaCliente.delete(cedula);
-                        JOptionPane.showMessageDialog(eliminarClienteForm.getRootPane(), "se ha borrado el cliente con cedula" + cedula
+                        tablaEquipo = new ServicioTablaEquipo();
+                        tablaEquipo.delete(serial);
+                        JOptionPane.showMessageDialog(eliminarEquipoForm.getRootPane(), "se ha borrado el equipo"
+                                + "con serial" + serial
                         + " exitosamente!");
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -340,9 +534,9 @@ public class ControladorEquipos implements ActionListener{
                 }
             }
         }
-                //eventos en formulario de clientes
-        if(e.getSource() == control.formularioClientes.getMenuBtn()) {
-            control.formularioClientes.setVisible(false);
+                //eventos en formulario de equipo
+        if(e.getSource() == control.formularioEquipos.getMenuBtn()) {
+            control.formularioEquipos.setVisible(false);
             if (control.formularioPrincipal == null) {
                 control.formularioPrincipal = new FormularioPrincipal();
                 control.formularioPrincipal.setVisible(true);
@@ -351,14 +545,14 @@ public class ControladorEquipos implements ActionListener{
             }
         }
         
-        if(e.getSource() == eliminarClienteForm.getVolverBtn()) {
-            eliminarClienteForm.setVisible(false);
-            if (control.formularioClientes == null) {
-                control.formularioClientes = new FormularioClientes();
-                control.formularioClientes.setVisible(true);
+        if(e.getSource() == eliminarEquipoForm.getVolverBtn()) {
+            eliminarEquipoForm.setVisible(false);
+            if (control.formularioEquipos == null) {
+                control.formularioEquipos = new FormularioEquipos();
+                control.formularioEquipos.setVisible(true);
             } else {
-                control.formularioClientes.setVisible(true);
+                control.formularioEquipos.setVisible(true);
             }
-        }*/
+        }
     }
 }

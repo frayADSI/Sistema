@@ -5,6 +5,7 @@
  */
 package servicios;
 import java.sql.*;
+import modelo.Cliente;
 import modelo.Equipo;
 
 public class ServicioTablaEquipo {
@@ -16,8 +17,9 @@ public class ServicioTablaEquipo {
             + "equubicacion=?, equcondicion=?,equifechaingreso=?,tbllicencia_liccodigo_fk=?,"
             + "tblcliente_clinumeroidentificacion_fk=? where equserial=?";
     private final String SQL_SELECT = "select equserial,equtipo,equcapacidadmemoria,equmarca,equubicacion,"
-            + "equcondicion,equifechaingreso,tbllicencia_liccodigo_fk,tblcliente_clinumeroidentificacion_fk from "
-            + "tblequipo where equserial=?";
+            + "equcondicion,equifechaingreso,tbllicencia_liccodigo_fk,tblcliente_clinumeroidentificacion_fk, clinombre, cliapellido,"
+            + "clitelefono from "
+            + "tblequipo,tblcliente where equserial=?";
     private final String SQL_DELETE = "delete from tblequipo where equserial=?";
     public ServicioTablaEquipo() {
         try {
@@ -26,19 +28,24 @@ public class ServicioTablaEquipo {
             ex.printStackTrace();
         }
     }
-    /*
+   
     public int insert(Equipo equipo) throws SQLException {
         int rows = 0;
         PreparedStatement stmt = null;
-        if (equipo.getCedula()!= 0 && cliente.getNombre()!=null &&cliente.getApellido() !=
-                null && cliente.getTelefono() != 0) {
+        if (!equipo.getSerial().equals("") && !equipo.getLicencia_LicCodigo().equals("") && equipo.getCliente() !=
+                null && equipo.getFechaIngreso() != null) {
             try {
                 stmt = conn.prepareStatement(SQL_INSERT);
                 int index = 1;
-                stmt.setLong(index++, cliente.getCedula());
-                stmt.setString(index++, cliente.getNombre());
-                stmt.setString(index++, cliente.getApellido());
-                stmt.setInt(index, cliente.getTelefono());
+                stmt.setString(index++, equipo.getSerial());
+                stmt.setString(index++, equipo.getTipo());
+                stmt.setDouble(index++, equipo.getMemoria());
+                stmt.setString(index++, equipo.getMarca());
+                stmt.setString(index++, equipo.getUbicacion());
+                stmt.setString(index++, equipo.getCondicion());
+                stmt.setDate(index++, equipo.getFechaIngreso());
+                stmt.setString(index++, equipo.getLicencia_LicCodigo());
+                stmt.setLong(index, equipo.getCliente_ident());
                 rows = stmt.executeUpdate();
                 System.out.println("Registros insertados: " + rows);
             } finally {
@@ -53,18 +60,23 @@ public class ServicioTablaEquipo {
         return rows;
     }
     
-    public int update(Cliente cliente) throws SQLException{
+    public int update(Equipo equipo) throws SQLException{
         int rows = 0;
         PreparedStatement stmt = null;
-        if (cliente.getCedula()!= 0 && cliente.getNombre()!=null &&cliente.getApellido() !=
-                null && cliente.getTelefono() != 0) {
+        if (!equipo.getSerial().equals("") && !equipo.getLicencia_LicCodigo().equals("") && equipo.getCliente() !=
+                null && equipo.getFechaIngreso() != null) {
             try {
                 stmt = conn.prepareStatement(SQL_UPDATE);
                 int index = 1;
-                stmt.setString(index++, cliente.getNombre());
-                stmt.setString(index++, cliente.getApellido());
-                stmt.setInt(index++, cliente.getTelefono());
-                stmt.setLong(index, cliente.getCedula());
+                stmt.setString(index++, equipo.getTipo());
+                stmt.setDouble(index++, equipo.getMemoria());
+                stmt.setString(index++, equipo.getMarca());
+                stmt.setString(index++, equipo.getUbicacion());
+                stmt.setString(index++, equipo.getCondicion());
+                stmt.setDate(index++, equipo.getFechaIngreso());
+                stmt.setString(index++, equipo.getLicencia_LicCodigo());
+                stmt.setLong(index++, equipo.getCliente_ident());
+                stmt.setString(index, equipo.getSerial());
                 rows = stmt.executeUpdate();
                 System.out.println("Registros actualizados: " + rows);
             } finally {
@@ -79,21 +91,35 @@ public class ServicioTablaEquipo {
         return rows;
     }
     
-    public Cliente consultar(long cedula) throws SQLException{
+    public Equipo consultar(String serial) throws SQLException{
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        Cliente cliente = new Cliente();
-        if (cedula != 0) {
+        Equipo equipo = new Equipo();
+        if (serial != null) {
             try {
                 stmt = conn.prepareStatement(SQL_SELECT);
-                stmt.setLong(1, cedula);
+                stmt.setString(1, serial);
                 rs = stmt.executeQuery();
                 while(rs.next()){
-                    long cedulaTemp = rs.getLong(1);
-                    String nombreTemp = rs.getString(2);
-                    String apellidoTemp = rs.getString(3);
-                    int telefonoTemp = rs.getInt(4);
-                    cliente = new Cliente(cedulaTemp, nombreTemp, apellidoTemp, telefonoTemp);
+                    String serialTemp = rs.getString(1);
+                    String tipoTemp = rs.getString(2);
+                    double memoriaTemp = rs.getDouble(3);
+                    String marcaTemp = rs.getString(4);
+                    String ubicacionTemp  = rs.getString(5);
+                    String condicionTemp = rs.getString(6);
+                    Date fechaTemp = rs.getDate(7);
+                    String codigoTemp = rs.getString(8);
+                    long cedulaTemp = rs.getLong(9);
+                    String nombreTemp = rs.getString(10);
+                    String apellidoTemp = rs.getString(11);
+                    int telfTemp = rs.getInt(12);
+                    equipo = new Equipo(serialTemp, codigoTemp, new Cliente(cedulaTemp, nombreTemp, apellidoTemp, telfTemp), fechaTemp);
+                    equipo.setCliente_ident(cedulaTemp);
+                    equipo.setMemoria(memoriaTemp);
+                    equipo.setTipo(tipoTemp);
+                    equipo.setMarca(marcaTemp);
+                    equipo.setUbicacion(ubicacionTemp);
+                    equipo.setCondicion(condicionTemp);
                 }
                 
             } finally {
@@ -108,16 +134,16 @@ public class ServicioTablaEquipo {
                 }
             }
         }
-        return cliente;
+        return equipo;
     }
     
-    public int delete(long cedula) throws SQLException{
+    public int delete(String serial) throws SQLException{
         int rows = 0;
         PreparedStatement stmt = null;
-        if (cedula != 0) {
+        if (serial != null) {
             try {
                 stmt = conn.prepareStatement(SQL_DELETE);
-                stmt.setLong(1, cedula);
+                stmt.setString(1, serial);
                 rows = stmt.executeUpdate();
                 System.out.println("Registros eliminados: " + rows);
             } finally {
@@ -132,5 +158,5 @@ public class ServicioTablaEquipo {
         return rows;
     }
 }
-*/
-}
+
+

@@ -5,7 +5,7 @@
  */
 package modelo;
 
-import java.util.Calendar;
+import java.sql.Date;
 
 /**
  *
@@ -20,9 +20,19 @@ public class Equipo {
     private String marca;
     private String ubicacion;
     private String condicion;
-    private Calendar fechaIngreso;
+    private Date fechaIngreso;
+    private Cliente cliente;
     
     public Equipo() {}
+    
+    public Equipo(String serial, String licencia, Cliente cliente, Date ingreso) {
+        this.serial = serial;
+        this.licencia_LicCodigo = licencia;
+        this.cliente = cliente;
+        this.fechaIngreso = ingreso;
+        this.ubicacion = "";
+        this.condicion = "";
+    }
 
     public String getSerial() {
         return serial;
@@ -88,12 +98,20 @@ public class Equipo {
         this.condicion = condicion;
     }
 
-    public Calendar getFechaIngreso() {
+    public Date getFechaIngreso() {
         return fechaIngreso;
     }
 
-    public void setFechaIngreso(Calendar fechaIngreso) {
+    public void setFechaIngreso(Date fechaIngreso) {
         this.fechaIngreso = fechaIngreso;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
     
     
