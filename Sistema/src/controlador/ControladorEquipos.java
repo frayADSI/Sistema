@@ -273,9 +273,9 @@ public class ControladorEquipos implements ActionListener{
             String serial = "";
             String licencia = "";
             long cedulaCliente = 0;
-            String tipo = null;
+            String tipo = "";
             double memoria = 0;
-            String marca = null;
+            String marca = "";
             String ubicacion = null;
             String condicion = null;
             String fechaString = null;
@@ -293,7 +293,25 @@ public class ControladorEquipos implements ActionListener{
                 JOptionPane.WARNING_MESSAGE);
                 return;
             }
-        
+            //Buscar equipo
+            ServicioTablaEquipo tablaEquipo = new ServicioTablaEquipo();
+            try {
+                Equipo equipo = tablaEquipo.consultar(serial);
+                if (equipo.getSerial() == null) {
+                    JOptionPane.showMessageDialog(actualizarEquipoForm.getRootPane(), "El equipo no se encuentra en la base de datos"
+                        + "", "Error", 
+                    JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(actualizarEquipoForm.getRootPane(), "Error de conexión"
+                        + "", "Error", 
+                    JOptionPane.WARNING_MESSAGE);
+                    ex.printStackTrace();
+                    return;
+            }
+                
+            
             if(actualizarEquipoForm.getCodigoLicencia().getText().length() <= 20) {
                 licencia = actualizarEquipoForm.getCodigoLicencia().getText();  
             } else {
@@ -315,7 +333,7 @@ public class ControladorEquipos implements ActionListener{
                 return;
             }
             if(actualizarEquipoForm.getTipoEquipo().getText().length() <= 20) {
-                tipo = insertarEquipoForm.getTipoEquipo().getText();
+                tipo = actualizarEquipoForm.getTipoEquipo().getText();
             } else {
                 JOptionPane.showMessageDialog(actualizarEquipoForm.getRootPane(), "Maximo 20 caracteres en el tipo", "Error", 
                 JOptionPane.WARNING_MESSAGE);
@@ -337,7 +355,7 @@ public class ControladorEquipos implements ActionListener{
                 return;
             }
             if(actualizarEquipoForm.getUbicacion().getText().length() <= 20) {
-                marca = insertarEquipoForm.getUbicacion().getText();
+                ubicacion = actualizarEquipoForm.getUbicacion().getText();
             } else {
                 JOptionPane.showMessageDialog(actualizarEquipoForm.getRootPane(), "Maximo 40 caracteres en la ubicacion", "Error", 
                 JOptionPane.WARNING_MESSAGE);
@@ -345,7 +363,7 @@ public class ControladorEquipos implements ActionListener{
             }
             
             condicion = actualizarEquipoForm.getCondicion().getSelectedItem().toString();
-            ubicacion = actualizarEquipoForm.getUbicacion().getText();
+            
             //obteniendo fecha de vencimiento
             try {
                 dia = actualizarEquipoForm.getDia().getSelectedItem().toString();
@@ -394,22 +412,22 @@ public class ControladorEquipos implements ActionListener{
             }
             if(!serial.equals("") && !licencia.equals("")  && vencimiento != null && cedulaCliente != 0) {
                 Equipo equipo = new Equipo(serial, licencia, cliente, vencimiento);
-                ServicioTablaEquipo tablaEquipo = new ServicioTablaEquipo();
-                if (ubicacion != "") {
+                tablaEquipo = new ServicioTablaEquipo();
+                if (!ubicacion.equals("")) {
                     equipo.setUbicacion(ubicacion);
                 }
-                if (condicion != "") {
+                if (!condicion.equals("")) {
                     equipo.setCondicion(condicion);
                 }
                 if ( cedulaCliente != 0) {
                     equipo.setCliente_ident(cedulaCliente);
                 }
-                if (tipo != "") 
+                if (!tipo.equals("")) 
                     equipo.setTipo(tipo);
                 if (memoria != 0) {
                     equipo.setMemoria(memoria);
                 }
-                if (marca != "") 
+                if (!marca.equals("")) 
                     equipo.setMarca(marca);
                 try {
                 int registroInsert = tablaEquipo.update(equipo);
@@ -467,7 +485,7 @@ public class ControladorEquipos implements ActionListener{
                 consultarEquipoForm.getCondicionLbl().setText(equipo.getCondicion());
                 consultarEquipoForm.getFechaIngesoLbl().setText(equipo.getFechaIngreso().toString());
                 consultarEquipoForm.getCedulaClienteLbl().setText(""+equipo.getCliente_ident());
-                consultarEquipoForm.getNombreLbl().setText(equipo.getCliente().getNombre());
+                consultarEquipoForm.getNombreClienteLbl().setText(equipo.getCliente().getNombre());
                 consultarEquipoForm.getApellidoCLienteLbl().setText(equipo.getCliente().getApellido());
                 consultarEquipoForm.getTelefonoClienteLbl().setText(""+equipo.getCliente().getTelefono());
                 } catch (SQLException ex) {

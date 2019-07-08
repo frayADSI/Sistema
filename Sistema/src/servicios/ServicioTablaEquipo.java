@@ -13,13 +13,13 @@ public class ServicioTablaEquipo {
     private final String SQL_INSERT = "insert into tblequipo(equserial,equtipo,equcapacidadmemoria,equmarca,equubicacion,"
             + "equcondicion,equifechaingreso,tbllicencia_liccodigo_fk,tblcliente_clinumeroidentificacion_fk)"
             + " values(?,?,?,?,?,?,?,?,?)";
-    private final String SQL_UPDATE = "update tblcliente set equtipo=?,equcapacidadmemoria=?,equmarca=?,"
+    private final String SQL_UPDATE = "update tblequipo set equtipo=?,equcapacidadmemoria=?,equmarca=?,"
             + "equubicacion=?, equcondicion=?,equifechaingreso=?,tbllicencia_liccodigo_fk=?,"
             + "tblcliente_clinumeroidentificacion_fk=? where equserial=?";
     private final String SQL_SELECT = "select equserial,equtipo,equcapacidadmemoria,equmarca,equubicacion,"
             + "equcondicion,equifechaingreso,tbllicencia_liccodigo_fk,tblcliente_clinumeroidentificacion_fk, clinombre, cliapellido,"
             + "clitelefono from "
-            + "tblequipo,tblcliente where equserial=?";
+            + "tblequipo a join tblcliente b on a.tblcliente_clinumeroidentificacion_fk = b.clinumeroidentificacion where a.equserial=?";
     private final String SQL_DELETE = "delete from tblequipo where equserial=?";
     public ServicioTablaEquipo() {
         try {
