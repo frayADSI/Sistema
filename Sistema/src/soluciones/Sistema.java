@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package soluciones;
-
+import controlador.*;
 /**
  *
  * @author Fray, Julie, Andres, Sergio
@@ -15,7 +15,8 @@ public class Sistema {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
+       Control control = new Control();
+       control.iniciar();
     }
     
 }
