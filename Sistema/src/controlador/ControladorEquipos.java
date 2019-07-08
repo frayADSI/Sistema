@@ -48,7 +48,7 @@ public class ControladorEquipos implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == control.formularioEquipos.getInsertarBtn()) {
-            control.formularioClientes.setVisible(false);
+            control.formularioEquipos.setVisible(false);
             if (insertarEquipoForm== null) {
                 insertarEquipoForm = new InsertarEquipoForm();
                 insertarEquipoForm.setVisible(true);
@@ -86,7 +86,7 @@ public class ControladorEquipos implements ActionListener{
             consultarEquipoForm.getNombreClienteLbl().setText("");
             consultarEquipoForm.getApellidoCLienteLbl().setText("");
             consultarEquipoForm.getCedulaClienteLbl().setText("");;
-            consultarEquipoForm.getTelefonoLbl().setText("");
+            consultarEquipoForm.getTelefonoClienteLbl().setText("");
         }
         if(e.getSource() == control.formularioEquipos.getDeleteBtn()) {
             control.formularioEquipos.setVisible(false);
@@ -508,13 +508,13 @@ public class ControladorEquipos implements ActionListener{
                 control.formularioEquipos.setVisible(true);
             }
         }
-        //eliminar cliente
+        //eliminar equipo
         if(e.getSource() == eliminarEquipoForm.getEliminarBtn()) {
             String serial = null;
-           if(eliminarEquipoForm.getSerialEliminarTF().getText() != "") {
+           if(!eliminarEquipoForm.getSerialEliminarTF().getText().equals("")) {
                 if(eliminarEquipoForm.getSerialEliminarTF().getText().length() <= 20) {
                
-                    serial = consultarEquipoForm.getSerialConsultarTF().getText();
+                    serial = eliminarEquipoForm.getSerialEliminarTF().getText();
                 
                 } else {
                     JOptionPane.showMessageDialog(eliminarEquipoForm.getRootPane(), "Maximo 20 caracteres en serial", "Error", 
@@ -537,14 +537,14 @@ public class ControladorEquipos implements ActionListener{
                     return;
                 }
                 int confirmacion = JOptionPane.showConfirmDialog(eliminarEquipoForm.getRootPane(), "Está seguro que"
-                        + " desea eliminar el equipo con serial" + serial + "?", "Eliminación de equipo", 
+                        + " desea eliminar el equipo con serial " + serial + "?", "Eliminación de equipo", 
                         JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
                 if(confirmacion == 0) {
                     try {
                         tablaEquipo = new ServicioTablaEquipo();
                         tablaEquipo.delete(serial);
                         JOptionPane.showMessageDialog(eliminarEquipoForm.getRootPane(), "se ha borrado el equipo"
-                                + "con serial" + serial
+                                + " con serial " + serial
                         + " exitosamente!");
                     } catch (Exception ex) {
                         ex.printStackTrace();

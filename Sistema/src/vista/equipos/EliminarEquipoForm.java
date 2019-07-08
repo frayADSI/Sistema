@@ -39,9 +39,9 @@ public class EliminarEquipoForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("Eliminar cliente");
+        jLabel1.setText("Eliminar Equipo");
 
-        jLabel2.setText("Cédula de cliente a eliminar");
+        jLabel2.setText("Serial del equipo a eliminar");
 
         eliminarBtn.setText("Eliminar");
 

@@ -72,7 +72,7 @@ public class ActualizarLicenciaForm extends javax.swing.JFrame {
 
         volverBtn.setText("Volver");
 
-        jLabel10.setText("fecha de ingreso:");
+        jLabel10.setText("fecha de vencimiento:");
 
         jLabel11.setText("mes(numero)");
 
